@@ -1,123 +1,206 @@
-import fetch from 'node-fetch';
-import { getDevice } from '@whiskeysockets/baileys';
 import fs from 'fs';
-import axios from 'axios';
-import moment from 'moment-timezone';
-import { bodyMenu, menuObject } from '../../lib/commands.js';
+import { join } from 'path';
+import { xpRange } from '../lib/levelling.js';
 
-function normalize(text = '') {
-  text = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
-  return text.endsWith('s') ? text.slice(0, -1) : text;
-}
+const tags = {
+  jadibot: '🐉 SUB BOTS GOTENKS',
+  eco: '⚡ ECONOMÍA SAIYAN',
+  descargas: '🌀 DESCARGAS',
+  tools: '🔧 HERRAMIENTAS',
+  owner: '👑 MAESTRO GOTENKS',
+  info: 'ℹ️ INFORMACIÓN',
+  game: '🎮 ENTRENAMIENTO',
+  gacha: '🎲 GACHA GOTENKS',
+  reacciones: '💥 REACCIONES',
+  group: '👥 DOJO GOTENKS',
+  search: '🔎 BUSCADOR KAME',
+  sticker: '📌 STICKERS',
+  ia: '🤖 ANDROID 16',
+  channel: '📺 CASA GOTENKS',
+  fun: '😂 DIVERSIÓN',
+};
+
+const defaultMenu = {
+  before: `
+╔══════════════════╗
+║🐉 𝙶𝙾𝚃𝙴𝙽𝙺𝚂 𝚅𝟷 𝙱𝙾𝚃 🌀  ║
+╠══════════════════╣
+║ Hola~ soy %botname 🐉
+║ *%name*, %greeting
+║ 
+║ 🐉 *Tipo:* %tipo
+║ ⚡ *Nivel:* *100%*
+║ 📅 *Fecha:* %date
+║ 🕐 *Hora:* %time
+║ ⏱️ *Activo:* %uptime
+╠═════════════════╣
+║      🌀 𝙲𝙾𝙼𝙰𝙽𝙳𝙾𝚂 𝙶𝙾𝚃𝙴𝙽𝙺𝚂       
+%readmore
+`.trimStart(),
+  header: '\n╠═ %category ═╣\n',
+  body: '║ 🌀 *%cmd* %islimit %isPremium',
+  footer: '',
+  after: `
+╠════════════════╣
+║🐉 *Gotenks V1 Bot* 
+║🌀 Fusión: Goten + Trunks
+╚════════════════╝
+
+*¡Que la fuerza Gotenks te acompañe!* 🌀🐉
+`.trim(),
+};
 
 export default {
-  command: ['allmenu', 'help', 'menu'],
-  category: 'info',
+  command: ['menu', 'help', 'menú', 'ayuda', 'comandos', 'gotenksmenu'],
+  category: 'main',
   run: async (client, m, args, usedPrefix, command) => {
     try {
-      const now = new Date();
-      const colombianTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Caracas' }));
-      const tiempo = colombianTime.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/,/g, '');
-      const tempo = moment.tz('America/Caracas').format('hh:mm A');
-      const botId = client?.user?.id.split(':')[0] + '@s.whatsapp.net';
-      const botSettings = global.db.data.settings[botId] || {};
-      const botname = botSettings.botname || 'Gotenks';
-      const namebot = botSettings.namebot || 'Gotenks V1';
-      const banner = botSettings.banner || '';
-      const owner = botSettings.owner || '';
-      const canalId = botSettings.id || '';
-      const canalName = botSettings.nameid || '';
-      const prefix = botSettings.prefix;
-      const link = botSettings.link || links.api.channel;
-      const isOficialBot = botId === global.client.user.id.split(':')[0] + '@s.whatsapp.net';
-      const botType = isOficialBot ? '🐉 Principal Gotenks' : '🌀 Sub Bot Gotenks';
-      const users = Object.keys(global.db.data.users).length;
-      const device = getDevice(m.key.id);
-      const sender = global.db.data.users[m.sender].name;
-      const time = client.uptime ? formatearMs(Date.now() - client.uptime) : "Desconocido";
-      const alias = {
-        anime: ['anime', 'reacciones'],
-        downloads: ['downloads', 'descargas'],
-        economia: ['economia', 'economy', 'eco'],
-        gacha: ['gacha', 'rpg'],
-        grupo: ['grupo', 'group'],
-        nsfw: ['nsfw', '+18'],
-        profile: ['profile', 'perfil'],
-        sockets: ['sockets', 'bots'],
-        stickers: ['stickers', 'sticker'],
-        utils: ['utils', 'utilidades', 'herramientas']
-      };
-      const input = normalize(args[0] || '');
-      const cat = Object.keys(alias).find(k => alias[k].map(normalize).includes(input));
-      const category = `${cat ? ` para \`${cat}\`` : `. 🐉🌀 *GOTENKS V1 BOT* 🌀🐉`}`
-      if (args[0] && !cat) {      
-        return m.reply(`🐉🌀 La categoria *${args[0]}* no existe, las categorias disponibles son: *${Object.keys(alias).join(', ')}*.\n⚡ Para ver la lista completa escribe *${usedPrefix}menu*\n⚡ Para ver los comandos de una categoría escribe *${usedPrefix}menu [categoría]*\n⚡ Ejemplo: *${usedPrefix}menu anime*`);
+      const { exp, limit, level } = global.db.data.users[m.sender] || {};
+      const { min, xp, max } = xpRange(level, global.multiplier);
+      const name = m.pushName || 'Usuario';
+
+      const ahora = new Date();
+      const horaVenezuela = new Date(ahora.toLocaleString('en-US', { timeZone: 'America/Caracas' }));
+
+      const date = horaVenezuela.toLocaleDateString('es', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric',
+        weekday: 'long'
+      });
+
+      const time = horaVenezuela.toLocaleTimeString('es', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+
+      const help = Object.values(global.plugins || {})
+        .filter(p => p && !p.disabled)
+        .map(p => ({
+          help: Array.isArray(p.command) ? p.command : [p.command],
+          tags: Array.isArray(p.category) ? p.category : [p.category],
+          prefix: 'customPrefix' in p,
+          limit: p.limit,
+          premium: p.premium,
+        }));
+
+      let nombreBot = global.db.data.settings?.[client.user.id.split(':')[0] + '@s.whatsapp.net']?.namebot || 'Gotenks V1';
+
+      const imagePath = join(process.cwd(), 'lib', 'gotenks.jpg');
+      let bannerFinal = null;
+      if (fs.existsSync(imagePath)) {
+        bannerFinal = fs.readFileSync(imagePath);
       }
-      const sections = menuObject;
-      const content = cat ? String(sections[cat] || '') : Object.values(sections).map(s => String(s || '')).join('\n\n');
-      let menu = bodyMenu ? String(bodyMenu || '') + '\n\n' + content : content;
-      const replacements = {
-        $owner: owner ? (!isNaN(owner.replace(/@s\.whatsapp\.net$/, '')) ? global.db.data.users[owner]?.name || owner.split('@')[0] : owner) : '⚡ Gotenks V1 Dev ⚡',
-        $botType: botType,
-        $device: device,
-        $tiempo: tiempo,
-        $tempo: tempo,
-        $users: users.toLocaleString(),
-        $link: link,
-        $cat: category,
-        $sender: sender,
-        $botname: botname,
-        $namebot: namebot,
-        $prefix: usedPrefix,
-        $uptime: time
+
+      const botJid = client.user.id.split(':')[0] + '@s.whatsapp.net';
+      const isOficialBot = botJid === global.client?.user?.id?.split(':')[0] + '@s.whatsapp.net';
+      const tipo = isOficialBot ? '🐉 GOTENKS PRINCIPAL' : '🌀 SUB GOTENKS';
+
+      const menuConfig = defaultMenu;
+
+      const _text = [
+        menuConfig.before,
+        ...Object.keys(tags).map(tag => {
+          const cmds = help
+            .filter(menu => menu.tags?.includes(tag))
+            .map(menu => menu.help.map(h => 
+              menuConfig.body
+                .replace(/%cmd/g, menu.prefix ? h : `${usedPrefix}${h}`)
+                .replace(/%islimit/g, menu.limit ? '🔒' : '')
+                .replace(/%isPremium/g, menu.premium ? '💎' : '🌀')
+            ).join('\n')).join('\n');
+          return cmds ? [menuConfig.header.replace(/%category/g, tags[tag]), cmds, menuConfig.footer].join('\n') : '';
+        }).filter(Boolean),
+        menuConfig.after
+      ].join('\n');
+
+      const replace = {
+        '%': '%',
+        p: usedPrefix,
+        botname: nombreBot,
+        taguser: '@' + m.sender.split('@')[0],
+        exp: (exp || 0) - (min || 0),
+        maxexp: xp || 0,
+        totalexp: exp || 0,
+        xp4levelup: (max || 0) - (exp || 0),
+        level: level || 0,
+        limit: limit || 0,
+        name: name,
+        date: date,
+        time: time,
+        uptime: clockString(client.uptime || 0),
+        tipo: tipo,
+        readmore: readMore,
+        greeting: getUwUGreeting(horaVenezuela.getHours()),
       };
-      for (const [key, value] of Object.entries(replacements)) {
-        menu = menu.replace(new RegExp(`\\${key}`, 'g'), value);
+
+      let text = _text.replace(
+        new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join('|')})`, 'g'),
+        (_, name) => String(replace[name])
+      );
+
+      if (bannerFinal) {
+        await client.sendMessage(m.chat, {
+          image: bannerFinal,
+          caption: text.trim(),
+          contextInfo: {
+            mentionedJid: [m.sender],
+            forwardingScore: 999,
+            isForwarded: true
+          }
+        }, { quoted: m });
+      } else {
+        await client.reply(m.chat, text.trim(), m);
       }
-        await client.sendMessage(m.chat, banner.includes('.mp4') || banner.includes('.webm') ? {
-            video: { url: banner },
-            gifPlayback: true,
-            caption: menu,
-            contextInfo: {
-              mentionedJid: [m.sender],
-              isForwarded: true,
-              forwardedNewsletterMessageInfo: {
-                newsletterJid: canalId,
-                serverMessageId: '',
-                newsletterName: canalName
-              }
-            }
-          } : {
-            text: menu,
-            contextInfo: {
-              mentionedJid: [m.sender],
-              isForwarded: true,
-              forwardedNewsletterMessageInfo: {
-                newsletterJid: canalId,
-                serverMessageId: '',
-                newsletterName: canalName
-              },
-              externalAdReply: {
-                title: `🐉 ${botname} 🌀`,
-                body: `${namebot} ⚡ Fusion Mode Activated ⚡`,
-                showAdAttribution: false,
-                thumbnailUrl: banner,
-                mediaType: 1,
-                previewType: 0,
-                renderLargerThumbnail: true
-              }
-            }
-          }, { quoted: m });
+
     } catch (e) {
-      await m.reply(`🐉🌀 An unexpected error occurred while executing command *${usedPrefix + command}*. Please try again or contact support if the issue persists.\n⚡ [Error: *${e.message}*]`)
+      console.error('Error en menu Gotenks:', e);
+      await client.reply(m.chat, 
+        `🐉🌀 *¡Ups! Algo salió mal*\n\n⚡ Error: ${e.message}\n\n*Usa:* ${usedPrefix}help simple`, 
+        m
+      );
     }
   }
 };
 
-function formatearMs(ms) {
-  const segundos = Math.floor(ms / 1000);
-  const minutos = Math.floor(segundos / 60);
-  const horas = Math.floor(minutos / 60);
-  const dias = Math.floor(horas / 24);
-  return [dias && `${dias}d`, `${horas % 24}h`, `${minutos % 60}m`, `${segundos % 60}s`].filter(Boolean).join(" ");
+const more = String.fromCharCode(8206);
+const readMore = more.repeat(4001);
+
+function clockString(ms) {
+  let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000);
+  let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60;
+  let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60;
+  return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
+}
+
+function getUwUGreeting(hour) {
+  const greetings = {
+    0: 'una noche mágica bajo las estrellas 🌙✨',
+    1: 'una noche de sueños Saiyan 💤🌀',
+    2: 'una noche llena de energía Ki 🌌⚡',
+    3: 'un amanecer en la Sala del Tiempo 🌅⏳',
+    4: 'un amanecer de meditación 🧘🌀',
+    5: 'un entrenamiento con King Kai 👑🌅',
+    6: 'una mañana de Kamehameha en la playa 🏖️🌀',
+    7: 'una mañana en Kame House 🏠🐢',
+    8: 'una mañana volando en Nimbus ☁️🌀',
+    9: 'una mañana en el Tenkaichi Budokai 🥋🎯',
+    10: 'un día de batalla en Cell Games ⚔️💥',
+    11: 'un día de Torneo del Poder 💪🌟',
+    12: 'un día soleado en Namek 🌍☀️',
+    13: 'una tarde de entrenamiento con Whis 🥛🌀',
+    14: 'una tarde en la Cámara Hipertérmica ⏱️✨',
+    15: 'una tarde de fusiones en el dojo 🔄🌸',
+    16: 'una tarde de transformaciones Saiyan 🌀💫',
+    17: 'un atardecer después del Genkidama 🌇⚡',
+    18: 'una noche de recuperación en la cápsula 💊🏥',
+    19: 'una noche viendo las estrellas Saiyan 🌠🐉',
+    20: 'una noche de cuentos del Planeta Vegeta 🪐📖',
+    21: 'una noche preparando Semillas Senzu 🌱🍡',
+    22: 'una noche protegiendo la Tierra 🌎🛡️',
+    23: 'una noche de vigilia Saiyan 🌃🌸',
+  };
+  return 'Espero que tengas ' + (greetings[hour] || 'un día increíble lleno de poder Saiyan~ 🌸✨');
 }
