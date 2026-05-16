@@ -4,8 +4,8 @@ import { xpRange } from '../lib/levelling.js';
 
 const tags = {
   jadibot: '🐉 SUB BOTS GOTENKS',
-  eco: '⚡ ECONOMÍA SAIYAN',
-  descargas: '🌀 DESCARGAS',
+  rpg: '⚡ RPG SAIYAN',
+  download: '🌀 DESCARGAS',
   tools: '🔧 HERRAMIENTAS',
   owner: '👑 MAESTRO GOTENKS',
   info: 'ℹ️ INFORMACIÓN',
@@ -52,7 +52,7 @@ const defaultMenu = {
 
 export default {
   command: ['menu', 'help', 'menú', 'ayuda', 'comandos', 'gotenksmenu'],
-  category: 'main',
+  category: 'info',
   run: async (client, m, args, usedPrefix, command) => {
     try {
       const { exp, limit, level } = global.db.data.users[m.sender] || {};
