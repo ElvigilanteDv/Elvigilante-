@@ -59,10 +59,10 @@ export default {
     }
     const totalBots = totalCounts.Owner + totalCounts.Sub
     const totalInGroup = categorizedBots.Owner.length + categorizedBots.Sub.length
-    let message = `ꕥ Números de Sockets activos *(${totalBots})*\n\n`
-    message += `❖ Principales › *${totalCounts.Owner}*\n`
-    message += `✿ Subs › *${totalCounts.Sub}*\n\n`
-    message += `➭ *Bots en el grupo ›* ${totalInGroup}\n`
+    let message = `🐉 Números de Sockets activos *(${totalBots})*\n\n`
+    message += `🌀 Principales › *${totalCounts.Owner}*\n`
+    message += `🌀 Subs › *${totalCounts.Sub}*\n\n`
+    message += `🌀 *Bots en el grupo ›* ${totalInGroup}\n`
     for (const category of ['Owner', 'Sub']) {
       if (categorizedBots[category].length) {
         message += categorizedBots[category].join('\n') + '\n'
