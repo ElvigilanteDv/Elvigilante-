@@ -1,5 +1,5 @@
 {
-  "name": "Miku wabots",
+  "name": "Gotenks-V1",
   "version": "1.0",
   "description": "WhatsApp Bot Multi Device",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "bot-wa",
     "multi-device"
   ],
-  "author": "Danielrxz",
+  "author": "dvwilker",
   "license": "MIT",
   "engines": {
     "node": ">=21.7.3",
@@ -23,11 +23,11 @@
   "dependencies": {
     "@babel/parser": "latest",
     "@vitalets/google-translate-api": "^8.0.0",
-    "@whiskeysockets/baileys": "github:this-xys/baileys",
+    "@whiskeysockets/baileys": "github:dvwilker/DvWilkerBail",
     "acrcloud": "^1.4.0",
     "aptoide-scraper": "github:DIEGO-OFC/dv-aptoide-scraper",
     "axios": "^0.24.0",
-    "cfonts": "latest",
+    "cfonts":"^3.3.0",
     "chalk": "^4.1.2",
     "cheerio": "npm:cheerio@1.0.0-rc.12",
     "express": "^4.19.2",
@@ -36,7 +36,7 @@
     "gradient-string": "^2.0.2",
     "grapheme-splitter": "^1.0.4",
     "human-readable": "^0.2.1",
-    "jimp": "latest",
+    "jimp": "^0.16.1",
     "lodash": "latest",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.37",
