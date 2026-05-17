@@ -67,7 +67,7 @@ async function buscarImagenDelirius(tag) {
 }
 
 export default {
-  command: ['rollwaifu', 'rw', 'roll'],
+  command: ['rw', 'rollwaifu', 'roll'],
   category: 'gacha',
   run: async (client, m, args, usedPrefix, command) => {
     const userId = m.sender;
