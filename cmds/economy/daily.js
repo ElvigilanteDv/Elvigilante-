@@ -1,5 +1,5 @@
 export default {
-  command: ['daily'],
+  command: ['daily', 'diario'],
   category: 'rpg',
   run: async (client, m, args, usedPrefix) => {
     const chat = global.db.data.chats[m.chat]
