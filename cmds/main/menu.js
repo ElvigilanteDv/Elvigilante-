@@ -2,26 +2,7 @@ import fs from 'fs';
 import { join } from 'path';
 import { xpRange } from '../../lib/levelling.js';
 
-const tags = {
-  jadibot: '🐉 SUB BOTS GOTENKS',
-  rpg: '⚡ RPG SAIYAN',
-  descargas: '🌀 DESCARGAS',
-  tools: '🔧 HERRAMIENTAS',
-  owner: '👑 MAESTRO GOTENKS',
-  info: 'ℹ️ INFORMACIÓN',
-  game: '🎮 ENTRENAMIENTO',
-  gacha: '🎲 GACHA GOTENKS',
-  reacciones: '💥 REACCIONES',
-  gropo: '👥 DOJO GOTENKS',
-  search: '🔎 BUSCADOR KAME',
-  sticker: '📌 STICKERS',
-  ia: '🤖 ANDROID 16',
-  channel: '📺 CASA GOTENKS',
-  fun: '😂 DIVERSIÓN',
-};
-
-const defaultMenu = {
-  before: `
+const defaultMenu = `
 ◤━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◥
 │  🐉 𝙶𝙾𝚃𝙴𝙽𝙺𝚂 𝚅𝟷 𝙱𝙾𝚃 🌀   │
 ├──────────────────────────────┤
@@ -34,24 +15,33 @@ const defaultMenu = {
 │ 🕐 %time
 │ ⏱️ %uptime
 ├──────────────────────────────┤
-│    🌀 𝐶𝑂𝑀𝐴𝑁𝐷𝑂𝑆 🌀     │
+│    🌀 𝙲𝙾𝙼𝙰𝙽𝙳𝙾𝚂 🌀     │
 ├──────────────────────────────┤
-`.trimStart(),
-  header: '\n│ ⚡ %category\n│\n',
-  body: '│   🌀 %cmd',
-  footer: '\n│',
-  after: `
+│ ⚡ 𝙴𝙲𝙾𝙽𝙾𝙼𝚈
+│   🌀 %prefixdaily - Recompensa diaria
+│   🌀 %prefixritual - Invocar ritual
+│   🌀 %prefixslut - Prostituirse
+│   🌀 %prefixwork - Trabajar
+│
+│ ⚡ 𝙶𝙰𝙲𝙷𝙰
+│   🌀 %prefixrw - Roll waifu
+│
+│ ⚡ 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚂
+│   🌀 %prefixplay - Audio YouTube
+│   🌀 %prefixplay2 - Video YouTube
+│
+│ ⚡ 𝙸𝙽𝙵𝙾
+│   🌀 %prefixmenu - Menú principal
 ├──────────────────────────────┤
 │ 🐉 𝐺𝑜𝑡𝑒𝑛𝑘𝑠 𝑉1 𝐵𝑜𝑡
 │ 📺 %channelName
 ◣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◢
 *𝐹𝑢𝑠𝑖𝑜𝑛 𝐻𝑎!* 🌀🐉
-`.trim(),
-};
+`;
 
 export default {
   command: ['menu', 'help', 'menú', 'ayuda', 'comandos', 'gotenksmenu'],
-  category: 'grupo',
+  category: 'info',
   run: async (client, m, args, usedPrefix, command) => {
     try {
       const { exp, limit, level } = global.db.data.users[m.sender] || {};
@@ -74,19 +64,6 @@ export default {
         second: '2-digit',
         hour12: true
       });
-
-      const comandosPorCategoria = new Map();
-      
-      for (const [cmdName, cmdData] of global.comandos || new Map()) {
-        if (cmdData && !cmdData.disabled && cmdData.category) {
-          const categoria = Array.isArray(cmdData.category) ? cmdData.category[0] : cmdData.category;
-          if (!comandosPorCategoria.has(categoria)) {
-            comandosPorCategoria.set(categoria, new Set());
-          }
-          const cmdPrincipal = Array.isArray(cmdData.command) ? cmdData.command[0] : cmdData.command;
-          comandosPorCategoria.get(categoria).add(cmdPrincipal);
-        }
-      }
 
       const botId = client.user.id.split(':')[0] + '@s.whatsapp.net';
       const botSettings = global.db.data.settings[botId] || {};
@@ -112,49 +89,17 @@ export default {
       }
       const uptime = clockString(uptimeSeconds * 1000);
 
-      const menuConfig = defaultMenu;
-
-      const _text = [
-        menuConfig.before,
-        ...Object.keys(tags).map(tag => {
-          const comandos = comandosPorCategoria.get(tag) || new Set();
-          if (comandos.size === 0) return '';
-          
-          const cmdsList = Array.from(comandos)
-            .sort()
-            .map(cmd => menuConfig.body.replace(/%cmd/g, `${usedPrefix}${cmd}`))
-            .join('\n');
-          
-          return cmdsList ? [menuConfig.header.replace(/%category/g, tags[tag]), cmdsList, menuConfig.footer].join('\n') : '';
-        }).filter(Boolean),
-        menuConfig.after
-      ].join('\n');
-
-      const replace = {
-        '%': '%',
-        p: usedPrefix,
-        botname: nombreBot,
-        taguser: '@' + m.sender.split('@')[0],
-        exp: (exp || 0) - (min || 0),
-        maxexp: xp || 0,
-        totalexp: exp || 0,
-        xp4levelup: (max || 0) - (exp || 0),
-        level: level || 0,
-        limit: limit || 0,
-        name: name,
-        date: date,
-        time: time,
-        uptime: uptime,
-        tipo: tipo,
-        readmore: readMore,
-        greeting: getUwUGreeting(horaVenezuela.getHours()),
-        channelName: canalName,
-      };
-
-      let text = _text.replace(
-        new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join('|')})`, 'g'),
-        (_, name) => String(replace[name])
-      );
+      let menu = defaultMenu
+        .replace(/%botname/g, nombreBot)
+        .replace(/%name/g, name)
+        .replace(/%greeting/g, getUwUGreeting(horaVenezuela.getHours()))
+        .replace(/%tipo/g, tipo)
+        .replace(/%level/g, level || 0)
+        .replace(/%date/g, date)
+        .replace(/%time/g, time)
+        .replace(/%uptime/g, uptime)
+        .replace(/%prefix/g, usedPrefix)
+        .replace(/%channelName/g, canalName);
 
       const messageContent = {
         contextInfo: {
@@ -171,9 +116,9 @@ export default {
 
       if (bannerFinal) {
         messageContent.image = bannerFinal;
-        messageContent.caption = text.trim();
+        messageContent.caption = menu;
       } else {
-        messageContent.text = text.trim();
+        messageContent.text = menu;
       }
 
       await client.sendMessage(m.chat, messageContent, { quoted: m });
@@ -181,15 +126,12 @@ export default {
     } catch (e) {
       console.error('Error en menu Gotenks:', e);
       await client.reply(m.chat, 
-        `🐉🌀 *¡Ups! Algo salió mal*\n\n⚡ Error: ${e.message}\n\n*Usa:* ${usedPrefix}help simple`, 
+        `🐉🌀 *¡Ups! Algo salió mal*\n\n⚡ Error: ${e.message}`, 
         m
       );
     }
   }
 };
-
-const more = String.fromCharCode(8206);
-const readMore = more.repeat(4001);
 
 function clockString(ms) {
   const dias = Math.floor(ms / 86400000);
