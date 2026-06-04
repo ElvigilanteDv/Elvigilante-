@@ -49,6 +49,7 @@ const defaultMenu = `
 │
 │ ⚡ 𝙸𝙽𝙵𝙾
 │   🌀 %prefixmenu - Menú principal
+│   🌀 %prefixping - Velocidad del bot
 │
 │ ⚡ 𝙾𝚆𝙽𝙴𝚁
 │   🌀 %prefixupdate - Actualizar bot
