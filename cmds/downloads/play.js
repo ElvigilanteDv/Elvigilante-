@@ -63,7 +63,6 @@ export default {
         title = isAudio ? 'Audio Gotenks' : 'Video Gotenks'
       }
 
-      // Enviar mensaje de carga
       const loadingMsg = await client.sendMessage(m.chat, { text: '🎵 Descargando audio... ⚡' }, { quoted: m })
 
       let apiUrl
@@ -76,7 +75,6 @@ export default {
       const res = await fetch(apiUrl)
       const data = await res.json()
 
-      // Verificar la estructura de la API
       if (!data || !data.status || !data.result || !data.result.download_url) {
         await client.sendMessage(m.chat, { 
           text: '🐉🌀 No se pudo obtener el enlace de descarga.\n⚡ Intenta con otro video.',
@@ -88,9 +86,8 @@ export default {
       const dl = data.result.download_url
       const videoTitle = data.result.title || title
 
-      // Editar mensaje a completado
       await client.sendMessage(m.chat, { 
-        text: `✅ *Descarga completada* 🐉\n\n🎼 Título: ${videoTitle}`,
+        text: '✅ *Descarga completada* 🐉🌀',
         edit: loadingMsg.key 
       })
 
