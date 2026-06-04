@@ -44,9 +44,11 @@ const defaultMenu = `
 │   🌀 %prefixapk - Buscar APK
 │   🌀 %prefixytsearch - Buscar YouTube
 │
+│ ⚡ 𝚂𝚃𝙸𝙲𝙺𝙴𝚁𝚂
+│   🌀 %prefixs - Convertir imagen a sticker
+│
 │ ⚡ 𝙸𝙽𝙵𝙾
 │   🌀 %prefixmenu - Menú principal
-│   🌀 %prefixs - Convertir a sticker
 │
 │ ⚡ 𝙾𝚆𝙽𝙴𝚁
 │   🌀 %prefixupdate - Actualizar bot
