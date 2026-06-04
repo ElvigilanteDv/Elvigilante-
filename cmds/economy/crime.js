@@ -1,30 +1,25 @@
 export default {
   command: ['crime', 'crimen'],
   category: 'economy',
-  description: 'Ganar coins rápido.',
-  run: async ({ msg, sock, usedPrefix, text }) => {
-    const chatId = msg.key.remoteJid;
-    const chat = global.db.data.chats[chatId];
+  run: async (client, m, args, usedPrefix, command) => {
+    const chat = global.db.data.chats[m.chat];
     if (chat.adminonly || !chat.economy) {
-      return msg.reply(`🐉🌀 Los comandos de *Economía* están desactivados en este grupo.\n\n⚡ Un *administrador* puede activarlos con el comando:\n» *${usedPrefix}economy on*`);
+      return m.reply(`🐉🌀 Los comandos de *Economía* están desactivados en este grupo.\n\n⚡ Un *administrador* puede activarlos con el comando:\n» *${usedPrefix}economy on*`);
     }
-    const botId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
-    const monedas = (global.db.data.settings[botId]).currency;
+    const botId = client.user.id.split(':')[0] + '@s.whatsapp.net';
+    const monedas = global.db.data.settings[botId].currency;
     
-    if (!global.db.data.chats[chatId]?.users?.[msg.key.remoteJid]) {
-      global.db.data.chats[chatId].users[msg.key.remoteJid] = {};
-    }
-    if (!global.db.data.chats[chatId].users[msg.key.remoteJid].lastcrime) {
-      global.db.data.chats[chatId].users[msg.key.remoteJid].lastcrime = 0;
-    }
+    const user = global.db.data.chats[m.chat].users[m.sender];
+    if (!user.lastcrime) user.lastcrime = 0;
     
-    const user = global.db.data.chats[chatId]?.users?.[msg.key.remoteJid];
     const remainingTime = user.lastcrime - Date.now();
     if (remainingTime > 0) {
-      return msg.reply(`🐉🌀 Debes esperar *${msToTime(remainingTime)}* antes de intentar nuevamente.`);
+      return m.reply(`🐉🌀 Debes esperar *${msToTime(remainingTime)}* antes de intentar nuevamente.`);
     }
+    
     const éxito = Math.random() < 0.4;
     let cantidad;
+    
     if (éxito) {
       cantidad = Math.floor(Math.random() * (7500 - 5500 + 1)) + 5500;
       user.coins = (user.coins || 0) + cantidad;
@@ -44,7 +39,8 @@ export default {
         user.coins = 0;
         user.bank = 0;
       }
-    }        
+    }
+    
     user.lastcrime = Date.now() + (7 * 60 * 1000);
     
     const successMessages = [
@@ -54,13 +50,15 @@ export default {
       `⚡ Interceptaste un paquete de lujo, ganaste *${cantidad.toLocaleString()} ${monedas}* 🌀`,
       `🐉 Vaciaste una cartera olvidada, ganaste *${cantidad.toLocaleString()} ${monedas}* ⚡`
     ];
+    
     const failMessages = [
       `🐉 Intentaste vender un reloj falso y te atraparon, perdiste *${cantidad.toLocaleString()} ${monedas}* ⚡`,
       `🌀 Hackeaste una cuenta pero te rastrearon, perdiste *${cantidad.toLocaleString()} ${monedas}* 🐉`,
       `⚡ Robaste una mochila pero una cámara te capturó, perdiste *${cantidad.toLocaleString()} ${monedas}* 🌀`
     ];
+    
     const message = éxito ? pickRandom(successMessages) : pickRandom(failMessages);
-    await sock.sendMessage(chatId, { text: `🐉 ${message} 🌀` }, { quoted: msg });
+    await m.reply(`🐉 ${message} 🌀`);
   }
 };
 
