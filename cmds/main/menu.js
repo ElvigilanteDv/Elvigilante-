@@ -24,6 +24,8 @@ const defaultMenu = `
 │   🌀 %prefixrt - Ruleta
 │   🌀 %prefixslut - Prostituirse
 │   🌀 %prefixwork - Trabajar
+│   🌀 %prefixcrime - As tus locuras
+│   🌀 %prefixweekly - recompensa semanal
 │
 │ ⚡ 𝙶𝙰𝙲𝙷𝙰
 │   🌀 %prefixrw - Roll waifu
@@ -42,7 +44,7 @@ const defaultMenu = `
 │
 │ ⚡ 𝙸𝙽𝙵𝙾
 │   🌀 %prefixmenu - Menú principal
-│   🌀 %prefixs - Convertir a sticker
+│   🌀 %prefixs - Convertir imagen a sticker
 │
 │ ⚡ 𝙾𝚆𝙽𝙴𝚁
 │   🌀 %prefixupdate - Actualizar bot
