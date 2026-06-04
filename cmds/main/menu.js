@@ -20,12 +20,14 @@ const defaultMenu = `
 │ ⚡ 𝙴𝙲𝙾𝙽𝙾𝙼𝚈
 │   🌀 %prefixdaily - Recompensa diaria
 │   🌀 %prefixweekly - Recompensa semanal
+│   🌀 %prefixmonthly - Recompensa mensual
 │   🌀 %prefixritual - Invocar ritual
 │   🌀 %prefixrt - Ruleta
+│   🌀 %prefixcrime - Robo
 │   🌀 %prefixslut - Prostituirse
 │   🌀 %prefixwork - Trabajar
-│   🌀 %prefixcrime - As tus locuras
-│   🌀 %prefixweekly - recompensa semanal
+│   🌀 %prefixdungeon - Mazmorra
+│   🌀 %prefixeinfo - Info economía
 │
 │ ⚡ 𝙶𝙰𝙲𝙷𝙰
 │   🌀 %prefixrw - Roll waifu
@@ -44,7 +46,7 @@ const defaultMenu = `
 │
 │ ⚡ 𝙸𝙽𝙵𝙾
 │   🌀 %prefixmenu - Menú principal
-│   🌀 %prefixs - Convertir imagen a sticker
+│   🌀 %prefixs - Convertir a sticker
 │
 │ ⚡ 𝙾𝚆𝙽𝙴𝚁
 │   🌀 %prefixupdate - Actualizar bot
