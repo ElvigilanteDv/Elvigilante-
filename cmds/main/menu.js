@@ -19,19 +19,34 @@ const defaultMenu = `
 ├──────────────────────────────┤
 │ ⚡ 𝙴𝙲𝙾𝙽𝙾𝙼𝚈
 │   🌀 %prefixdaily - Recompensa diaria
+│   🌀 %prefixweekly - Recompensa semanal
 │   🌀 %prefixritual - Invocar ritual
+│   🌀 %prefixrt - Ruleta
 │   🌀 %prefixslut - Prostituirse
 │   🌀 %prefixwork - Trabajar
 │
 │ ⚡ 𝙶𝙰𝙲𝙷𝙰
 │   🌀 %prefixrw - Roll waifu
+│   🌀 %prefixc - Reclamar waifu
 │
 │ ⚡ 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚂
 │   🌀 %prefixplay - Audio YouTube
 │   🌀 %prefixplay2 - Video YouTube
+│   🌀 %prefixfb - Video Facebook
+│   🌀 %prefixtiktok - Video TikTok
+│
+│ ⚡ 𝚂𝙴𝙰𝚁𝙲𝙷
+│   🌀 %prefixtiktoksearch - Buscar TikTok
+│   🌀 %prefixapk - Buscar APK
+│   🌀 %prefixytsearch - Buscar YouTube
 │
 │ ⚡ 𝙸𝙽𝙵𝙾
 │   🌀 %prefixmenu - Menú principal
+│   🌀 %prefixs - Convertir a sticker
+│
+│ ⚡ 𝙾𝚆𝙽𝙴𝚁
+│   🌀 %prefixupdate - Actualizar bot
+│   🌀 %prefixrestart - Reiniciar bot
 ├──────────────────────────────┤
 │ 🐉 𝐺𝑜𝑡𝑒𝑛𝑘𝑠 𝑉1 𝐵𝑜𝑡
 │ 📺 %channelName
