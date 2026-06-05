@@ -27,7 +27,11 @@ const defaultMenu = `
 │   🌀 %prefixslut - Prostituirse
 │   🌀 %prefixwork - Trabajar
 │   🌀 %prefixdungeon - Mazmorra
+│   🌀 %prefixmine - Minar
 │   🌀 %prefixeinfo - Info economía
+│   🌀 %prefixbal - Ver balance
+│   🌀 %prefixbaltop - Ranking economy
+│   🌀 %prefixpay - Transferir coins
 │
 │ ⚡ 𝙶𝙰𝙲𝙷𝙰
 │   🌀 %prefixrw - Roll waifu
