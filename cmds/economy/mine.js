@@ -1,62 +1,62 @@
-import db from '#db';
-
 export default {
   command: ['mine', 'minar'],
   category: 'economy',
   description: 'Realizar trabajos de minería y ganar coins.',
   run: async (client, m, args, usedPrefix, command) => {
-    const chat = db.getChat(m.chat);
+    const chat = global.db.data.chats[m.chat];
     if (chat.adminonly || !chat.economy) {
       return m.reply(`🐉🌀 Los comandos de *Economía* están desactivados en este grupo.\n\n⚡ Un *administrador* puede activarlos con el comando:\n» *${usedPrefix}economy on*`);
     }
+    
     const botId = client.user.id.split(':')[0] + '@s.whatsapp.net';
-    const botSettings = db.getSettings(botId);
+    const botSettings = global.db.data.settings[botId];
     const monedas = botSettings?.currency || 'Coins';
     
-    db.setCreate('chat_users', [m.chat, m.sender], 'tools', {});
-    db.setCreate('chat_users', [m.chat, m.sender], 'lastmine', 0);    
-    let user = db.getChatUser(m.chat, m.sender);
+    let user = global.db.data.chats[m.chat].users[m.sender];
+    if (!user) {
+      return m.reply(`🐉🌀 No estás registrado. Usa *${usedPrefix}work* para comenzar.`);
+    }
     
-    if (user.tools && typeof user.tools === 'string') {
+    if (!user.tools) user.tools = {};
+    if (typeof user.tools === 'string') {
       try { user.tools = JSON.parse(user.tools); } catch { user.tools = {}; }
-    }    
+    }
+    if (!user.lastmine) user.lastmine = 0;
+    if (!user.stamina) user.stamina = 100;
+    if (!user.coins) user.coins = 0;
     
     const staminaConsumed = Math.floor(Math.random() * (5 - 1 + 1)) + 1;
     if (user.stamina < staminaConsumed) {
       return m.reply(`🐉🌀 No tienes suficiente energía para minar.\n⚡ Usa *${usedPrefix}heal* para curarte.`);
-    }    
+    }
     
     if (!user.tools?.pico) {
       return m.reply(`🐉🌀 Necesitas un Pico para minar.\n⚡ Compra uno con: *${usedPrefix}buy pico*`);
-    }    
+    }
     
     if (user.tools.pico.durability <= 10) {
       delete user.tools.pico;
-      db.setChatUser(m.chat, m.sender, 'tools', user.tools);
       return m.reply(`🐉🌀 Tu Pico se ha roto.\n⚡ Compra uno nuevo con: *${usedPrefix}buy pico*`);
-    }    
+    }
     
     const remaining = user.lastmine - Date.now();
     if (remaining > 0) {
       return m.reply(`🐉🌀 Debes esperar *${msToTime(remaining)}* para minar de nuevo.`);
-    }    
+    }
     
     user.stamina -= staminaConsumed;
-    db.setChatUser(m.chat, m.sender, 'stamina', user.stamina);    
     
     const durabilityConsumed = Math.floor(Math.random() * (15 - 1 + 1)) + 1;
-    user.tools.pico.durability -= durabilityConsumed;    
+    user.tools.pico.durability -= durabilityConsumed;
     
     if (user.tools.pico.durability <= 10) {
       delete user.tools.pico;
     }
-    db.setChatUser(m.chat, m.sender, 'tools', user.tools);    
     
     user.lastmine = Date.now() + 10 * 60 * 1000;
-    db.setChatUser(m.chat, m.sender, 'lastmine', user.lastmine);    
     
     let isLegendary = Math.random() < 0.02;
-    let reward, narration, bonusMsg = '';    
+    let reward, narration, bonusMsg = '';
     
     if (isLegendary) {
       reward = Math.floor(Math.random() * (13000 - 11000 + 1)) + 11000;
@@ -71,10 +71,9 @@ export default {
         reward += bonus;
         bonusMsg = `\n⚡ ¡Bonus de minería! Ganaste *${bonus.toLocaleString()}* ${monedas} extra 🌀`;
       }
-    }    
+    }
     
     user.coins += reward;
-    db.setChatUser(m.chat, m.sender, 'coins', user.coins);    
     
     let caption = `${narration} *${reward.toLocaleString()} ${monedas}*`;
     if (bonusMsg) caption += `\n${bonusMsg}`;
