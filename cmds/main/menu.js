@@ -28,10 +28,18 @@ const defaultMenu = `
 │   🌀 %prefixwork - Trabajar
 │   🌀 %prefixdungeon - Mazmorra
 │   🌀 %prefixmine - Minar
+│   🌀 %prefixfish - Pescar
+│   🌀 %prefixadventure - Aventura
 │   🌀 %prefixeinfo - Info economía
 │   🌀 %prefixbal - Ver balance
 │   🌀 %prefixbaltop - Ranking economy
 │   🌀 %prefixpay - Transferir coins
+│   🌀 %prefixdep - Depositar coins
+│   🌀 %prefixwithdraw - Retirar coins
+│   🌀 %prefixshop - Tienda
+│   🌀 %prefixinv - Inventario
+│   🌀 %prefixppt - Piedra, papel o tijera
+│   🌀 %prefixslot - Tragamonedas
 │
 │ ⚡ 𝙶𝙰𝙲𝙷𝙰
 │   🌀 %prefixrw - Roll waifu
