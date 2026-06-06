@@ -13,26 +13,23 @@ export default {
 
     await client.sendPresenceUpdate('composing', m.chat)
 
-    const prompt = `Actúa como Gotenks. Responde como él, divertido y arrogante. Respuesta corta. Pregunta: ${text}`
+    const prompt = `Eres Gotenks. Responde como el guerrero Saiyan arrogante, divertido y presumido. Usa emojis 🐉🌀⚡. Responde corto. Pregunta: ${text}`
 
     try {
       const url = `https://api-gohan-v1.onrender.com/ai/gemini?text=${encodeURIComponent(prompt)}`
       const res = await fetch(url)
-      const data = await res.text()
+      const data = await res.json()
       
-      console.log('RESPUESTA CRUDA:', data)
+      let respuesta = ''
       
-      let respuesta = data
-      
-      try {
-        const parsed = JSON.parse(data)
-        respuesta = parsed.text || parsed.result || parsed.response || data
-      } catch (e) {
+      if (typeof data === 'string') {
         respuesta = data
+      } else if (data && typeof data === 'object') {
+        respuesta = data.text || data.result || data.response || data.message || JSON.stringify(data)
       }
-
-      if (!respuesta || respuesta === '[object Object]' || respuesta.includes('[object')) {
-        respuesta = "🐉🌀 ¡Ja! No entendí eso, tipo."
+      
+      if (!respuesta || respuesta === '[object Object]') {
+        respuesta = "🐉🌀 ¡Soy Gotenks! No entendí eso, tipo. ¡Pregunta de nuevo!"
       }
 
       await client.sendPresenceUpdate('paused', m.chat)
