@@ -1,4 +1,4 @@
-import { delay } from 'baileys';
+import { ... } from '@whiskeysockets/baileys'
 
 export default {
   command: ['slot'],
